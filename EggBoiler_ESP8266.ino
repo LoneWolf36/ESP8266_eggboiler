@@ -27,15 +27,15 @@ bool flag = false;
 bool flag1 = false;
 /************************* WiFi Access Point *********************************/
 
-#define WLAN_SSID       "YOUNet"
-#define WLAN_PASS       "Serenity"
+#define WLAN_SSID       "Your wifi ssid"
+#define WLAN_PASS       "Your password"
 
 /************************* Adafruit.io Setup *********************************/
 
 #define AIO_SERVER      "io.adafruit.com"
 #define AIO_SERVERPORT  1883                   // use 8883 for SSL
-#define AIO_USERNAME    "LoneWolf09"
-#define AIO_KEY         "074f69f8173447a3b26d1e2ffb16cc9f"
+#define AIO_USERNAME    "username"
+#define AIO_KEY         "key"
 
 /************ Global State (you don't need to change this!) ******************/
 
