@@ -16,6 +16,7 @@
   MIT license, all text above must be included in any redistribution
  ****************************************************/
 #include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
 #include "Adafruit_MQTT.h"
 #include "Adafruit_MQTT_Client.h"
 
@@ -27,8 +28,14 @@ bool flag = false;
 bool flag1 = false;
 /************************* WiFi Access Point *********************************/
 
-#define WLAN_SSID       "Your wifi ssid"
-#define WLAN_PASS       "Your password"
+#define WLAN_SSID       "*********"
+#define WLAN_PASS       "*********"
+
+#define WLAN_SSID1      "*********"
+#define WLAN_PASS1      "*********"
+
+#define WLAN_SSID2      "*********"
+#define WLAN_PASS2      "*********"
 
 /************************* Adafruit.io Setup *********************************/
 
@@ -38,7 +45,7 @@ bool flag1 = false;
 #define AIO_KEY         "key"
 
 /************ Global State (you don't need to change this!) ******************/
-
+ESP8266WiFiMulti multiple;
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
 WiFiClient client;
 // or... use WiFiFlientSecure for SSL
@@ -69,11 +76,22 @@ void setup() {
   Serial.println(F("Adafruit MQTT demo"));
 
   // Connect to WiFi access point.
-  Serial.println(); Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(WLAN_SSID);
+  Serial.println();
+  Serial.print("Connecting to WiFi");
+  //Serial.println(WLAN_SSID);
+  multiple.addAP(WLAN_SSID, WLAN_PASS);
+  multiple.addAP(WLAN_SSID1, WLAN_PASS1);
+  multiple.addAP(WLAN_SSID2, WLAN_PASS2);
 
-  WiFi.begin(WLAN_SSID, WLAN_PASS);
+  while (multiple.run() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println();
+  Serial.print("Connected to: ");
+  Serial.println(WiFi.SSID());
+
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -81,7 +99,8 @@ void setup() {
   Serial.println();
 
   Serial.println("WiFi connected");
-  Serial.println("IP address: "); Serial.println(WiFi.localIP());
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
   pinMode(relayPin, OUTPUT);
 
   // Setup MQTT subscription for onoff feed.
@@ -98,7 +117,7 @@ void loop() {
   if (flag == true) {
     timer++;
     Serial.println(timer);
-    if ( timer == 180 ) {
+    if ( timer == 180 || (strcmp((char *)onoffbutton1.lastread, "OFF") == 0) ) {
       // Now we can publish stuff!
       if (! onoffbutton.publish("OFF")) {
         Serial.println(F("Failed"));
